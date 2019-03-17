@@ -8,7 +8,7 @@ import os
 def main(folder):
     print('folder = %s'%folder)
 
-    w = load(folder+'w.npy')[0]
+    w = load(folder+'w.npy')
     GR = load(folder+'GR.npy')
     Nk = load(folder+'Nk.npy')[0]
     SR = load(folder+'SR.npy')

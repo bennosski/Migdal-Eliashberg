@@ -122,9 +122,6 @@ if savedir is None:
     S  = -SC * 0.01 * ones([Nk,Nk,Nw,2,2], dtype=complex)*tau1[None,None,None,:,:]
     PI = zeros([Nk,Nk,Nw+1], dtype=complex)
 else:
-    #S = zeros([Nk,Nw,2,2], dtype=complex)
-    #S  = load(savedir+'S.npy')[None,:,:,:]
-    #PI = zeros([Nk,Nw+1], dtype=complex)
     S  = load(savedir+'S.npy')
     PI = load(savedir+'PI.npy')
 
@@ -142,7 +139,7 @@ def myp(x):
 
 change = [0, 0]
 frac = 0.6
-for i in range(200):
+for i in range(0):
     S0  = S[:]
     PI0 = PI[:]
     
@@ -186,7 +183,7 @@ PIR = zeros([Nk,Nk,len(w)], dtype=complex)
 GR  = compute_GR(SR, mu, idelta)
 DR  = compute_DR(PIR)
 
-print('compting Gsum')
+print('computing Gsum')
 Gsum_plus  = zeros([Nk,Nk,len(w),2,2], dtype=complex)
 Gsum_minus = zeros([Nk,Nk,len(w),2,2], dtype=complex)
 for iw in range(len(w)):
