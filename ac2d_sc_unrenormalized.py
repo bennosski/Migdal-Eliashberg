@@ -17,7 +17,7 @@ beta = 40.0
 iwm = 1j * pi/beta * (2*arange(-Nw//2, Nw//2) + 1)
 vn = pi/beta * 2*arange(-Nw//2, Nw//2+1)
 
-dw = 0.001
+dw = 0.02
 w = arange(-5.0, 5.0, dw)
 
 omega = 1.0
@@ -37,10 +37,10 @@ print('lamb = %1.3f'%lamb)
 print('g = %1.3f'%g)
 print('lamb correct = %1.3f'%(2*g**2/(8.0*omega)))
 print('Nk = %d'%Nk)
+print('idelta = %1.3f'%idelta.imag)
 
-folder = 'data2d/data_sc_unrenormalized_%db%d_lamb%1.1f_beta%1.1f/'%(Nk,Nk,lamb,beta)
+folder = 'data2d/data_sc_unrenormalized_%db%d_lamb%1.1f_beta%1.1f_idelta%1.3f/'%(Nk,Nk,lamb,beta,idelta.imag)
 if not os.path.exists(folder): os.mkdir(folder)
-
 
 kys, kxs = meshgrid(arange(-pi, pi, 2*pi/Nk), arange(-pi, pi, 2*pi/Nk))
 def band(kxs, kys):
@@ -109,7 +109,7 @@ print('fill = %1.3f'%(compute_fill(G)))
 
 change = 0
 frac = 0.8
-for i in range(300):
+for i in range(200):
     S0  = S[:]
 
     S  = compute_S(G, D) 

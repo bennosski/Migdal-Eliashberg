@@ -21,7 +21,7 @@ beta = 40.0
 iwm = 1j * pi/beta * (2*arange(-Nw//2, Nw//2) + 1)
 vn = pi/beta * 2*arange(-Nw//2, Nw//2+1)
 
-dw = 0.001
+dw = 0.02
 w = arange(-5.0, 5.0, dw)
 
 omega = 1.0
@@ -41,9 +41,11 @@ print('lamb = %1.3f'%lamb)
 print('g = %1.3f'%g)
 print('lamb correct = %1.3f'%(2*g**2/(8.0*omega)))
 print('Nk = %d'%Nk)
+print('delta = %1.3f'%idelta.imag)
 
-folder = 'data2d/data_sc_renormalized_%db%d_lamb%1.1f_beta%1.1f/'%(Nk,Nk,lamb,beta)
-if not os.path.exists(folder): os.mkdir(folder)
+folder = 'data2d/data_sc_renormalized_%db%d_lamb%1.1f_beta%1.1f_idelta%1.3f/'%(Nk,Nk,lamb,beta,idelta.imag)
+if not os.path.exists(folder): 
+    os.mkdir(folder)
 
 kys, kxs = meshgrid(arange(-pi, pi, 2*pi/Nk), arange(-pi, pi, 2*pi/Nk))
 def band(kxs, kys):
@@ -129,6 +131,11 @@ G  = compute_G(S, mu)
 D  = compute_D(PI, omega)
 print('fill = %1.3f'%(compute_fill(G)))
 
+print('shape S', shape(S))
+print('shape PI', shape(PI))
+print('shape G', shape(G))
+print('shape D', shape(D))
+
 #print('G', mean(abs(G[:,:,0,0].real)))
 #print('G', mean(abs(G[:,:,0,0].imag)))
 #print('D', mean(abs(D.real)))
@@ -138,8 +145,8 @@ def myp(x):
     print(mean(abs(x.real)), mean(abs(x.imag)))
 
 change = [0, 0]
-frac = 0.6
-for i in range(0):
+frac = 0.8
+for i in range(100):
     S0  = S[:]
     PI0 = PI[:]
     
@@ -160,13 +167,13 @@ for i in range(0):
     
     print('change=%1.3e %1.3e, diag=%1.3e, odlro=%1.3e, fill=%1.3f, mu=%1.3f'%(change[0], change[1], mean(abs(S[:,:,:,0,0])), mean(abs(S[:,:,:,0,1])), n, mu))
     
-    if i>10 and change[0]<1e-14 and change[1]<1e-14: break
+    if i>10 and change[0]<1e-7 and change[1]<1e-7: break
 
     if i%10==0:
         save(folder+'S', S)
         save(folder+'PI', PI)
+        print('saved')
 
-    
 save(folder+'iwm', iwm)
 save(folder+'w', w)
 save(folder+'Nk', [Nk])
@@ -220,7 +227,7 @@ for i in range(50):
         save(folder+'SR', SR)
         save(folder+'PIR', PIR)
         save(folder+'DR', DR)
-        print(' ')
+        print('saved')
 
     #myp(SR[:,:,:,0,0])
 

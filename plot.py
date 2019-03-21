@@ -9,6 +9,11 @@ def main(folder):
     print('folder = %s'%folder)
 
     w = load(folder+'w.npy')
+
+    print('shape w', shape(w))
+
+    SC = True
+
     GR = load(folder+'GR.npy')
     Nk = load(folder+'Nk.npy')[0]
     SR = load(folder+'SR.npy')
@@ -18,6 +23,8 @@ def main(folder):
 
     A = -1.0/pi*GR.imag
     B = -1.0/pi*DR.imag
+
+    if len(shape(A))==5: A = A[:,:,:,0,0]
 
     figure()
     plot(w, A[Nk//4,Nk//4,:])
@@ -62,14 +69,32 @@ def main(folder):
     xlim(-2.0, 2.0)
     savefig(folder+'DOS')
 
-    if len(shape(SR))>1:
+    if len(shape(SR))==5:
         figure()
-        plot(w, SR[Nk//4,Nk//4,:].real)
-        plot(w, SR[Nk//4,Nk//4,:].imag)
+        plot(w, SR[Nk//4,Nk//4,:,0,0].real)
+        plot(w, SR[Nk//4,Nk//4,:,0,0].imag)
+        title('$S(k_F,\omega)$')
+        savefig(folder+'Skfw')  
+
+        figure()
+        plot(w, SR[Nk//4,Nk//4,:,0,1].real)
+        plot(w, SR[Nk//4,Nk//4,:,0,1].imag)
+        title('$S01(k_F,\omega)$')
+        savefig(folder+'S01kfw')        
+    elif len(shape(SR))==3 and SC:
+        print('shape SR', shape(SR))
+        figure()
+        plot(w, SR[:,0,0].real)
+        plot(w, SR[:,0,0].imag)
         title('$S(k_F,\omega)$')
         savefig(folder+'Skfw')
-    else:
 
+        figure()
+        plot(w, SR[:,0,1].real)
+        plot(w, SR[:,0,1].imag)
+        title('$S01(k_F,\omega)$')
+        savefig(folder+'S01kfw')
+    else:
         figure()
         plot(w, SR.real)
         plot(w, SR.imag)
