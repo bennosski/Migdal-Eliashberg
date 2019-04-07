@@ -6,18 +6,20 @@ import os
 import plot1d as plt
 from scipy import optimize
 import sys
+import params
 
 print('running renormalized ME')
 
 savedir = None
-if len(sys.argv)>1:
-    savedir = sys.argv[1]
+if len(sys.argv)>2:
+    savedir = sys.argv[2]
     print('Using data from %s\n'%savedir)
-
+    
+'''
 # params
 Nw = 600
 Nk = 100
-beta = 40.0
+beta = 10.0
 iwm = 1j * pi/beta * (2*arange(-Nw//2, Nw//2) + 1)
 vn = pi/beta * 2*arange(-Nw//2, Nw//2+1)
 
@@ -29,10 +31,15 @@ omega = 1.0
 lamb = 1.0
 alpha = sqrt(omega**2*lamb)
 g = alpha/sqrt(omega)
-idelta = 0.020j
+idelta = 0.030j
 dens = 0.7
 
 SC = 1
+'''
+
+
+Nw, Nk, beta, iwm, vn, dw, w, omega, lamb, alpha, g, idelta, dens, SC = params.get_params(int(sys.argv[1]))
+
 
 print('beta %1.3f'%beta)
 print('alpha = %1.3f'%alpha)
@@ -174,6 +181,8 @@ for i in range(100):
         save(folder+'PI', PI)
         print('saved')
 
+save(folder+'ek', [ek])
+save(fodler+'mu', [mu])
 save(folder+'iwm', iwm)
 save(folder+'w', w)
 save(folder+'Nk', [Nk])

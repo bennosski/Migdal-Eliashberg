@@ -32,14 +32,15 @@ def main(folder):
     xlim(-1.8, 1.8)
     ylim(0, 2.0)
     savefig(folder+'Akfw')
-
+    save(folder+'w_data', w)
+    
     z = array([A[i, Nk//4] for i in range(Nk)])
     figure()
     imshow(z.T, origin='lower', aspect='auto', extent=[0,len(z),w[0],w[-1]], interpolation='bilinear', vmax=1.0)
     ylim(-2.0, 2.0)
     colorbar()
     savefig(folder+'Akw_cut1')
-
+    save(folder+'Akw_cut1_data', z.T)
 
     ilist = list(reversed(range(Nk//2))) + [0]*(Nk//2-1) + list(range(1,Nk//2)) 
     jlist = [Nk//2]*(Nk//2) + list(reversed(range(Nk//2-1))) + list(range(1,Nk//2)) 
@@ -49,6 +50,7 @@ def main(folder):
     ylim(-3.0, 3.0)
     colorbar()
     savefig(folder+'Akw')
+    save(folder+'Akw_data', z.T)
 
     print(shape(B))
     if len(shape(B))>1:
@@ -57,10 +59,11 @@ def main(folder):
         z = array([B for _ in range(len(ilist))])
 
     figure()
-    imshow(z.T, origin='lower', aspect='auto', extent=[0,len(z),w[0],w[-1]], interpolation='bilinear', vmin=0.0)
+    imshow(z.T, origin='lower', aspect='auto', extent=[0,len(z),w[0],w[-1]], interpolation='bilinear', vmin=0.0, vmax=3.0)
     ylim(0.0, 1.0)
     colorbar()
     savefig(folder+'Bkw')
+    save(folder+'Bkw_data', z.T)
 
     DOS =  sum(A, axis=(0,1)) / Nk**2
     figure()
@@ -68,6 +71,7 @@ def main(folder):
     title('DOS')
     xlim(-2.0, 2.0)
     savefig(folder+'DOS')
+    save(folder+'DOS_data', DOS)
 
     if len(shape(SR))==5:
         figure()
@@ -75,6 +79,7 @@ def main(folder):
         plot(w, SR[Nk//4,Nk//4,:,0,0].imag)
         title('$S(k_F,\omega)$')
         savefig(folder+'Skfw')  
+        save(folder+'Skfw_data', SR[Nk//4, Nk//4, :, 0, 0].real)
 
         figure()
         plot(w, SR[Nk//4,Nk//4,:,0,1].real)

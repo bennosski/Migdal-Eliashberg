@@ -11,9 +11,9 @@ print('running unrenormalized ME')
 def myp(x): print(mean(abs(x.real)), mean(abs(x.imag)))
 
 # params
-Nw = 600
+Nw = 1600
 Nk = 100
-beta = 40.0
+beta = 100.0
 iwm = 1j * pi/beta * (2*arange(-Nw//2, Nw//2) + 1)
 vn = pi/beta * 2*arange(-Nw//2, Nw//2+1)
 
@@ -25,7 +25,7 @@ omega = 1.0
 lamb = 1.0
 alpha = sqrt(omega**2*lamb)
 g = alpha/sqrt(omega)
-idelta = 0.020j
+idelta = 0.030j
 dens = 0.7
 
 SC = 1
