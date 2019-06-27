@@ -6,24 +6,22 @@ import os
 import plot1d as plt
 from scipy import optimize
 import sys
-import params
 
 print('running renormalized ME')
 
 savedir = None
-if len(sys.argv)>2:
-    savedir = sys.argv[2]
+if len(sys.argv)>1:
+    savedir = sys.argv[1]
     print('Using data from %s\n'%savedir)
-    
-'''
+
 # params
 Nw = 600
 Nk = 100
-beta = 10.0
+beta = 40.0
 iwm = 1j * pi/beta * (2*arange(-Nw//2, Nw//2) + 1)
 vn = pi/beta * 2*arange(-Nw//2, Nw//2+1)
 
-dw = 0.02
+dw = 0.001
 w = arange(-5.0, 5.0, dw)
 
 omega = 1.0
@@ -31,15 +29,10 @@ omega = 1.0
 lamb = 1.0
 alpha = sqrt(omega**2*lamb)
 g = alpha/sqrt(omega)
-idelta = 0.030j
+idelta = 0.020j
 dens = 0.7
 
 SC = 1
-'''
-
-
-Nw, Nk, beta, iwm, vn, dw, w, omega, lamb, alpha, g, idelta, dens, SC = params.get_params(int(sys.argv[1]))
-
 
 print('beta %1.3f'%beta)
 print('alpha = %1.3f'%alpha)
@@ -47,12 +40,9 @@ print('omega = %1.3f'%omega)
 print('lamb = %1.3f'%lamb)
 print('g = %1.3f'%g)
 print('lamb correct = %1.3f'%(2*g**2/(8.0*omega)))
-print('Nk = %d'%Nk)
-print('delta = %1.3f'%idelta.imag)
 
-folder = 'data2d/data_sc_renormalized_%db%d_lamb%1.1f_beta%1.1f_idelta%1.3f/'%(Nk,Nk,lamb,beta,idelta.imag)
-if not os.path.exists(folder): 
-    os.mkdir(folder)
+folder = 'data2d/data_sc_renormalized_%db%d_lamb%1.1f_beta%1.1f/'%(Nk,Nk,lamb,beta)
+if not os.path.exists(folder): os.mkdir(folder)
 
 kys, kxs = meshgrid(arange(-pi, pi, 2*pi/Nk), arange(-pi, pi, 2*pi/Nk))
 def band(kxs, kys):
@@ -131,17 +121,15 @@ if savedir is None:
     S  = -SC * 0.01 * ones([Nk,Nk,Nw,2,2], dtype=complex)*tau1[None,None,None,:,:]
     PI = zeros([Nk,Nk,Nw+1], dtype=complex)
 else:
+    #S = zeros([Nk,Nw,2,2], dtype=complex)
+    #S  = load(savedir+'S.npy')[None,:,:,:]
+    #PI = zeros([Nk,Nw+1], dtype=complex)
     S  = load(savedir+'S.npy')
     PI = load(savedir+'PI.npy')
 
 G  = compute_G(S, mu)
 D  = compute_D(PI, omega)
 print('fill = %1.3f'%(compute_fill(G)))
-
-print('shape S', shape(S))
-print('shape PI', shape(PI))
-print('shape G', shape(G))
-print('shape D', shape(D))
 
 #print('G', mean(abs(G[:,:,0,0].real)))
 #print('G', mean(abs(G[:,:,0,0].imag)))
@@ -152,8 +140,8 @@ def myp(x):
     print(mean(abs(x.real)), mean(abs(x.imag)))
 
 change = [0, 0]
-frac = 0.8
-for i in range(100):
+frac = 0.6
+for i in range(200):
     S0  = S[:]
     PI0 = PI[:]
     
@@ -174,15 +162,13 @@ for i in range(100):
     
     print('change=%1.3e %1.3e, diag=%1.3e, odlro=%1.3e, fill=%1.3f, mu=%1.3f'%(change[0], change[1], mean(abs(S[:,:,:,0,0])), mean(abs(S[:,:,:,0,1])), n, mu))
     
-    if i>10 and change[0]<1e-7 and change[1]<1e-7: break
+    if i>10 and change[0]<1e-14 and change[1]<1e-14: break
 
     if i%10==0:
         save(folder+'S', S)
         save(folder+'PI', PI)
-        print('saved')
 
-save(folder+'ek', [ek])
-save(fodler+'mu', [mu])
+    
 save(folder+'iwm', iwm)
 save(folder+'w', w)
 save(folder+'Nk', [Nk])
@@ -199,7 +185,7 @@ PIR = zeros([Nk,Nk,len(w)], dtype=complex)
 GR  = compute_GR(SR, mu, idelta)
 DR  = compute_DR(PIR)
 
-print('computing Gsum')
+print('compting Gsum')
 Gsum_plus  = zeros([Nk,Nk,len(w),2,2], dtype=complex)
 Gsum_minus = zeros([Nk,Nk,len(w),2,2], dtype=complex)
 for iw in range(len(w)):
@@ -236,7 +222,7 @@ for i in range(50):
         save(folder+'SR', SR)
         save(folder+'PIR', PIR)
         save(folder+'DR', DR)
-        print('saved')
+        print(' ')
 
     #myp(SR[:,:,:,0,0])
 
